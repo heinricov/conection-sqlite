@@ -30,17 +30,18 @@ export default function PostForm({
         body: JSON.stringify({ title, content }),
       });
 
-      if (res.ok) {
-        setStatus({ type: "success", message: "✅ Post berhasil ditambahkan" });
-        setTitle("");
-        setContent("");
-        // Panggil callback untuk memperbarui daftar post
-        if (onPostCreated) {
-          onPostCreated();
-        }
-      } else {
-        const error = await res.json();
-        throw new Error(error.message || "Gagal menambahkan post");
+      const data = await res.json().catch(() => ({}));
+      
+      if (!res.ok) {
+        throw new Error(data.message || 'Gagal menambahkan post');
+      }
+      
+      setStatus({ type: "success", message: "✅ Post berhasil ditambahkan" });
+      setTitle("");
+      setContent("");
+      // Panggil callback untuk memperbarui daftar post
+      if (onPostCreated) {
+        onPostCreated();
       }
     } catch (error) {
       console.error("Error creating post:", error);

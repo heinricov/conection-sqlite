@@ -17,10 +17,15 @@ export default function PostList() {
     const fetchPosts = async () => {
       try {
         const res = await fetch("/api/posts");
-        const data = await res.json();
-        setPosts(data);
+        const result = await res.json();
+        
+        if (result.success) {
+          setPosts(result.data || []);
+        } else {
+          console.error("Gagal memuat data:", result.message);
+        }
       } catch (error) {
-        console.error("Gagal memuat data:", error);
+        console.error("Terjadi kesalahan:", error);
       } finally {
         setLoading(false);
       }
